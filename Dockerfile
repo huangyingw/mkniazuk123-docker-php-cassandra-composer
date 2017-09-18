@@ -43,6 +43,3 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 # Remove builddeps
 RUN apk del .build-deps
-
-#VOLUME ["/app"]
-WORKDIR /app
