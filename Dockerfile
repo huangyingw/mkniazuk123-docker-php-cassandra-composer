@@ -43,3 +43,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 # Remove builddeps
 RUN apk del .build-deps
+
+ENTRYPOINT ["docker-php-entrypoint"]
+CMD ["php", "-a"]
