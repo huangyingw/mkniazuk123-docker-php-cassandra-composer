@@ -14,7 +14,7 @@ ENV BUILD_DEPS \
 RUN docker-php-ext-install pdo_mysql
 
 RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
-    && apk add --no-cache git libuv gmp libstdc++
+    && apk add --no-cache git libuv gmp libstdc++ mysql-client python py-pip
 
 # Install DataStax C/C++ Driver
 WORKDIR /lib
@@ -40,6 +40,9 @@ WORKDIR /tmp
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
     && php -r "unlink('composer-setup.php');"
+
+# Install cqlsh
+RUN pip install cqlsh
 
 # Remove builddeps
 RUN apk del .build-deps
