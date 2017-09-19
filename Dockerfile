@@ -26,11 +26,10 @@ RUN git clone https://github.com/datastax/cpp-driver.git cpp-driver \
     && make -j4 \
     && make install
 
-RUN ln -s /usr/local/lib64/* /usr/local/lib \
-    && ln -s /usr/lib64/* /usr/lib
+RUN ln -s /usr/local/lib64/libcassandra* /usr/local/lib/
 
 # Install Cassandra PHP extension
-RUN pecl install cassandra-1.3.2 --with-cassandra=/lib/cpp-driver  \
+RUN pecl install cassandra-1.3.2  \
     && docker-php-ext-enable cassandra \
     && php -m | grep cassandra
 
