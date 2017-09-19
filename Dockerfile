@@ -14,12 +14,13 @@ ENV BUILD_DEPS \
 RUN docker-php-ext-install pdo_mysql
 
 RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
-    && apk add --no-cache git libuv gmp libstdc++ mariadb-client python py-pip
+    && apk add --no-cache git libuv gmp libstdc++ mariadb-client python3
 
 # Install DataStax C/C++ Driver
 WORKDIR /lib
 RUN git clone https://github.com/datastax/cpp-driver.git cpp-driver \
     && cd cpp-driver \
+    && git checkout tags/2.7.0 \
     && mkdir build \
     && cd build \
     && cmake -DCASS_BUILD_STATIC=ON -DCASS_BUILD_SHARED=ON .. \
@@ -41,7 +42,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');"
 
 # Install cqlsh
-RUN pip install cqlsh
+RUN pip3 install cqlsh
 
 # Remove builddeps
 RUN apk del .build-deps
