@@ -14,7 +14,7 @@ ENV BUILD_DEPS \
 RUN docker-php-ext-install pdo_mysql
 
 RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
-    && apk add --no-cache git libuv gmp libstdc++ mariadb-client python
+    && apk add --no-cache git libuv gmp libstdc++ mariadb-client python py-pip
 
 # Install DataStax C/C++ Driver
 WORKDIR /lib
