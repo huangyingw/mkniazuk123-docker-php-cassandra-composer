@@ -11,10 +11,16 @@ ENV BUILD_DEPS \
                 libuv-dev \
                 gmp-dev
 
-RUN docker-php-ext-install pdo_mysql
-
 RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
     && apk add --no-cache git libuv gmp libstdc++ mariadb-client python py-pip
+
+# Install PDO MySQL driver
+RUN docker-php-ext-install pdo_mysql
+
+# Install redis driver
+RUN pecl install redis-3.1.3 \
+    && docker-php-ext-enable redis \
+    && php -m | grep redis
 
 # Install DataStax C/C++ Driver
 WORKDIR /lib
