@@ -10,6 +10,8 @@ ENV BUILD_DEPS \
                 openssl-dev \
                 libuv-dev \
                 gmp-dev
+ENV REDIS_VERSION 3.1.3
+ENV IGBINARY_VERSION 2.0.4
 
 RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
     && apk add --no-cache git libuv gmp libstdc++ mariadb-client python py-pip
@@ -17,8 +19,23 @@ RUN apk update && apk add --no-cache --virtual .build-deps $BUILD_DEPS \
 # Install PDO MySQL driver
 RUN docker-php-ext-install pdo_mysql
 
+# Install igbinary
+RUN pecl install igbinary-$IGBINARY_VERSION \
+    && rm -rf /tmp/pear \
+    && docker-php-ext-enable igbinary \
+    && php -m | grep igbinary
+
 # Install redis driver
-RUN pecl install redis-3.1.3 \
+RUN mkdir -p /tmp/pear \
+    && cd /tmp/pear \
+    && pecl bundle redis-$REDIS_VERSION \
+    && cd redis \
+    && phpize . \
+    && ./configure --enable-redis-igbinary \
+    && make \
+    && make install \
+    && cd ~ \
+    && rm -rf /tmp/pear \
     && docker-php-ext-enable redis \
     && php -m | grep redis
 
@@ -38,8 +55,8 @@ RUN ln -s /usr/local/lib64/libcassandra* /usr/local/lib/
 # Install Cassandra PHP extension
 RUN pecl install cassandra-1.3.2  \
     && docker-php-ext-enable cassandra \
+    && rm -rf /tmp/pear \
     && php -m | grep cassandra
-
 
 # Install composer
 WORKDIR /tmp

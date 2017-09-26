@@ -5,3 +5,4 @@ Based on official php:7.1.9-alpine image. Extras:
 - MariaDB client
 - Casandra client `cqlsh` installed via `pip`
 - Redis PHP driver v3.1.3 installed via `pecl`
+- `igbinary` extension
